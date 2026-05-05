@@ -1,10 +1,20 @@
 import express from "express";
 import dotenv from "dotenv";
+import { connectDB } from "./config/db.js";
+
+import taskRoutes from "./routes/task.routes.js";
 
 dotenv.config();
 
 const app = express();
 
-app.listen(process.env.PORT, () => {
-  console.log("Server started");
+const PORT = process.env.PORT || 5000;
+
+app.use(express.json());
+
+app.use("/api/tasks", taskRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on PORT: ${PORT}`);
+  connectDB();
 });
