@@ -22,7 +22,10 @@ export const TaskProvider = ({ children }) => {
   });
 
   const fetchTasks = async () => {
-    if (!token) return;
+    if (!token) {
+      setTasks([]);
+      return;
+    }
     try {
       const res = await axios.get(API_URL, getHeaders());
       setTasks(res.data);

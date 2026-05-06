@@ -45,7 +45,7 @@ const TaskForm = () => {
           placeholder="Enter task description"
           value={formData.description}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-25"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
         />
       </div>
       <button
