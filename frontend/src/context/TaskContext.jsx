@@ -33,12 +33,33 @@ export const TaskProvider = ({ children }) => {
     }
   };
 
+  const toggleTaskStatus = async (id, currentStatus) => {
+    try {
+      const newStatus = currentStatus === "completed" ? "pending" : "completed";
+      const res = await axios.patch(`${API_URL}/${id}`, { status: newStatus });
+      setTasks((prev) =>
+        prev.map((task) => (task._id === id ? res.data : task))
+      );
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  };
+
+  const deleteTask = async (id) => {
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+      setTasks((prev) => prev.filter((task) => task._id !== id));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
   useEffect(() => {
     fetchTasks();
   }, []);
 
   return (
-    <TaskContext.Provider value={{ tasks, addTask }}>
+    <TaskContext.Provider value={{ tasks, addTask, toggleTaskStatus, deleteTask }}>
       {children}
     </TaskContext.Provider>
   );
