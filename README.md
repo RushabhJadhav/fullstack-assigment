@@ -19,7 +19,7 @@ A full-stack task management application built with Node.js (Express), MongoDB, 
 
 ### 1. Clone the Repository
 ```bash
-git clone <your-repo-link>
+git clone https://github.com/RushabhJadhav/fullstack-assigment
 cd fullstack-assignment
 ```
 
