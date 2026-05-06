@@ -3,13 +3,15 @@ import mongoose from "mongoose";
 const taskSchema = new mongoose.Schema({
   title: {
     type: String,
-    requried: true
+    required: true
   },
-  desscription: {
+  description: {
     type: String,
   },
   status: {
-    type: Boolean,
+    type: String,
+    enum: ["pending", "completed"],
+    default: "pending"
   },
 }, {
   timestamps: true
