@@ -1,16 +1,57 @@
+import { useState } from "react";
 import { useTasks } from "../context/TaskContext";
 
 const TaskList = () => {
   const { tasks, toggleTaskStatus, deleteTask } = useTasks();
+  const [filter, setFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "completed") return task.status === "completed";
+    if (filter === "pending") return task.status === "pending";
+    return true;
+  });
+
+  const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
+  const indexOfLastTask = currentPage * itemsPerPage;
+  const indexOfFirstTask = indexOfLastTask - itemsPerPage;
+  const currentTasks = filteredTasks.slice(indexOfFirstTask, indexOfLastTask);
+
+  const handleFilterChange = (newFilter) => {
+    setFilter(newFilter);
+    setCurrentPage(1);
+  };
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-gray-800 border-b pb-2">Your Tasks</h2>
-      {tasks.length === 0 ? (
-        <p className="text-gray-500 italic text-center py-8">No tasks found. Add some above!</p>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center border-b pb-4 gap-4">
+        <h2 className="text-2xl font-bold text-gray-800">Your Tasks</h2>
+        
+        <div className="flex bg-gray-200 p-1 rounded-lg">
+          {["all", "pending", "completed"].map((f) => (
+            <button
+              key={f}
+              onClick={() => handleFilterChange(f)}
+              className={`px-4 py-1 rounded-md text-sm font-medium capitalize transition duration-200 ${
+                filter === f
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {currentTasks.length === 0 ? (
+        <p className="text-gray-500 italic text-center py-12 bg-white rounded-lg border border-dashed border-gray-300">
+          {filter === "all" ? "No tasks found. Add some above!" : `No ${filter} tasks found.`}
+        </p>
       ) : (
         <div className="grid gap-4">
-          {tasks.map((task) => (
+          {currentTasks.map((task) => (
             <div
               key={task._id}
               className={`p-4 rounded-lg shadow-sm border flex justify-between items-center transition duration-200 ${
@@ -50,6 +91,28 @@ const TaskList = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-4 mt-8">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 border rounded-md text-sm font-medium bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+          >
+            Previous
+          </button>
+          <span className="text-sm text-gray-600 font-medium">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 border rounded-md text-sm font-medium bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+          >
+            Next
+          </button>
         </div>
       )}
     </div>
